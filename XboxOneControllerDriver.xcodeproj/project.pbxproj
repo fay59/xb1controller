@@ -1,0 +1,274 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DCCAFD7619A5214A0032E2D3 /* XboxOneControllerDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = DCCAFD7519A5214A0032E2D3 /* XboxOneControllerDriver.h */; };
+		DCCAFD7819A5214A0032E2D3 /* XboxOneControllerDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DCCAFD7719A5214A0032E2D3 /* XboxOneControllerDriver.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		DCCAFD7019A5214A0032E2D3 /* XboxOneControllerDriver.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XboxOneControllerDriver.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCCAFD7419A5214A0032E2D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DCCAFD7519A5214A0032E2D3 /* XboxOneControllerDriver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XboxOneControllerDriver.h; sourceTree = "<group>"; };
+		DCCAFD7719A5214A0032E2D3 /* XboxOneControllerDriver.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = XboxOneControllerDriver.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DCCAFD6C19A5214A0032E2D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DCCAFD6619A5214A0032E2D3 = {
+			isa = PBXGroup;
+			children = (
+				DCCAFD7219A5214A0032E2D3 /* XboxOneControllerDriver */,
+				DCCAFD7119A5214A0032E2D3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DCCAFD7119A5214A0032E2D3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DCCAFD7019A5214A0032E2D3 /* XboxOneControllerDriver.kext */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DCCAFD7219A5214A0032E2D3 /* XboxOneControllerDriver */ = {
+			isa = PBXGroup;
+			children = (
+				DCCAFD7519A5214A0032E2D3 /* XboxOneControllerDriver.h */,
+				DCCAFD7719A5214A0032E2D3 /* XboxOneControllerDriver.cpp */,
+				DCCAFD7319A5214A0032E2D3 /* Supporting Files */,
+			);
+			path = XboxOneControllerDriver;
+			sourceTree = "<group>";
+		};
+		DCCAFD7319A5214A0032E2D3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DCCAFD7419A5214A0032E2D3 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		DCCAFD6D19A5214A0032E2D3 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCCAFD7619A5214A0032E2D3 /* XboxOneControllerDriver.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		DCCAFD6F19A5214A0032E2D3 /* XboxOneControllerDriver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DCCAFD7B19A5214A0032E2D3 /* Build configuration list for PBXNativeTarget "XboxOneControllerDriver" */;
+			buildPhases = (
+				DCCAFD6B19A5214A0032E2D3 /* Sources */,
+				DCCAFD6C19A5214A0032E2D3 /* Frameworks */,
+				DCCAFD6D19A5214A0032E2D3 /* Headers */,
+				DCCAFD6E19A5214A0032E2D3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XboxOneControllerDriver;
+			productName = XboxOneControllerDriver;
+			productReference = DCCAFD7019A5214A0032E2D3 /* XboxOneControllerDriver.kext */;
+			productType = "com.apple.product-type.kernel-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DCCAFD6719A5214A0032E2D3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Félix Cloutier";
+				TargetAttributes = {
+					DCCAFD6F19A5214A0032E2D3 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+				};
+			};
+			buildConfigurationList = DCCAFD6A19A5214A0032E2D3 /* Build configuration list for PBXProject "XboxOneControllerDriver" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = DCCAFD6619A5214A0032E2D3;
+			productRefGroup = DCCAFD7119A5214A0032E2D3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DCCAFD6F19A5214A0032E2D3 /* XboxOneControllerDriver */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DCCAFD6E19A5214A0032E2D3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DCCAFD6B19A5214A0032E2D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCCAFD7819A5214A0032E2D3 /* XboxOneControllerDriver.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		DCCAFD7919A5214A0032E2D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		DCCAFD7A19A5214A0032E2D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		DCCAFD7C19A5214A0032E2D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.0.0d1;
+				INFOPLIST_FILE = XboxOneControllerDriver/Info.plist;
+				MODULE_NAME = com.felixcloutier.XboxOneControllerDriver;
+				MODULE_VERSION = 1.0.0d1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Debug;
+		};
+		DCCAFD7D19A5214A0032E2D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.0.0d1;
+				INFOPLIST_FILE = XboxOneControllerDriver/Info.plist;
+				MODULE_NAME = com.felixcloutier.XboxOneControllerDriver;
+				MODULE_VERSION = 1.0.0d1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DCCAFD6A19A5214A0032E2D3 /* Build configuration list for PBXProject "XboxOneControllerDriver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCCAFD7919A5214A0032E2D3 /* Debug */,
+				DCCAFD7A19A5214A0032E2D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DCCAFD7B19A5214A0032E2D3 /* Build configuration list for PBXNativeTarget "XboxOneControllerDriver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCCAFD7C19A5214A0032E2D3 /* Debug */,
+				DCCAFD7D19A5214A0032E2D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DCCAFD6719A5214A0032E2D3 /* Project object */;
+}
