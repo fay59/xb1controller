@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DCCAFD7619A5214A0032E2D3 /* XboxOneControllerDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = DCCAFD7519A5214A0032E2D3 /* XboxOneControllerDriver.h */; };
-		DCCAFD7819A5214A0032E2D3 /* XboxOneControllerDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DCCAFD7719A5214A0032E2D3 /* XboxOneControllerDriver.cpp */; };
+		DCCAFD8019A52CE80032E2D3 /* XboxOneController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DCCAFD7F19A52CE80032E2D3 /* XboxOneController.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		DCCAFD7019A5214A0032E2D3 /* XboxOneControllerDriver.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XboxOneControllerDriver.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCCAFD7419A5214A0032E2D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DCCAFD7519A5214A0032E2D3 /* XboxOneControllerDriver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XboxOneControllerDriver.h; sourceTree = "<group>"; };
-		DCCAFD7719A5214A0032E2D3 /* XboxOneControllerDriver.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = XboxOneControllerDriver.cpp; sourceTree = "<group>"; };
+		DCCAFD7E19A52CAE0032E2D3 /* XboxOneController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XboxOneController.h; sourceTree = "<group>"; };
+		DCCAFD7F19A52CE80032E2D3 /* XboxOneController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XboxOneController.cpp; sourceTree = "<group>"; };
+		DCCAFDAD19A7F1F70032E2D3 /* XboxOneControllerPacket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XboxOneControllerPacket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,8 +48,9 @@
 		DCCAFD7219A5214A0032E2D3 /* XboxOneControllerDriver */ = {
 			isa = PBXGroup;
 			children = (
-				DCCAFD7519A5214A0032E2D3 /* XboxOneControllerDriver.h */,
-				DCCAFD7719A5214A0032E2D3 /* XboxOneControllerDriver.cpp */,
+				DCCAFDAD19A7F1F70032E2D3 /* XboxOneControllerPacket.h */,
+				DCCAFD7E19A52CAE0032E2D3 /* XboxOneController.h */,
+				DCCAFD7F19A52CE80032E2D3 /* XboxOneController.cpp */,
 				DCCAFD7319A5214A0032E2D3 /* Supporting Files */,
 			);
 			path = XboxOneControllerDriver;
@@ -70,7 +71,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCCAFD7619A5214A0032E2D3 /* XboxOneControllerDriver.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,7 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCCAFD7819A5214A0032E2D3 /* XboxOneControllerDriver.cpp in Sources */,
+				DCCAFD8019A52CE80032E2D3 /* XboxOneController.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,7 +184,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 			};
 			name = Debug;
 		};
@@ -218,7 +218,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 			};
 			name = Release;
 		};
