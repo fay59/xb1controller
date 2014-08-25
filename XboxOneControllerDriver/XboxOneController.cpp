@@ -80,7 +80,7 @@ constexpr UInt8 XboxOneControllerReportDescriptor[] = {
 			0x95, 0x02,			// REPORT_COUNT (2)
 			0x81, 0x02,			// INPUT (Data,Var,Abs)
 	
-			// hat prefixes
+			// sticks prefix
 			0x16, 0x00, 0x80,	// LOGICAL_MINIMUM (-32768)
 			0x26, 0xff, 0x7f,	// LOGICAL_MAXIMUM (32767)
 			0x36, 0x00, 0x80,	// PHYSICAL MINIMUM (-32768)
@@ -89,7 +89,7 @@ constexpr UInt8 XboxOneControllerReportDescriptor[] = {
 			0x75, 0x10,			// REPORT_SIZE (16)
 			0x05, 0x01,			// USAGE_PAGE (Generic Desktop)
 	
-			// left hat
+			// left stick
 			0x09, 0x01,			// USAGE (Pointer)
 			0xa1, 0x00,			// COLLECTION (Physical)
 				0x09, 0x30,		// USAGE (X)
@@ -97,7 +97,7 @@ constexpr UInt8 XboxOneControllerReportDescriptor[] = {
 				0x81, 0x02,		// INPUT (Data,Var,Abs)
 			0xc0,				// END COLLECTION
 	
-			// right hat
+			// right stick
 			0x09, 0x01,			// USAGE (Pointer)
 			0xa1, 0x00,			// COLLECTION (Physical)
 				0x09, 0x33,		// USAGE (Rx)
@@ -164,7 +164,6 @@ bool XboxOneControllerDriver::handleStart(IOService *provider)
 		.direction = kUSBOut,
 	};
 	
-	pipeRequest.direction = kUSBOut;
 	IOUSBPipe* pipeToController = interface->FindNextPipe(nullptr, &pipeRequest);
 	if (pipeToController != nullptr)
 	{
@@ -192,7 +191,7 @@ IOReturn XboxOneControllerDriver::handleReport(IOMemoryDescriptor *descriptor, I
 		return kIOReturnNoMemory;
 	}
 	
-	// 0x20 is a button state report, anything else should be ignored (at least until we figure out what they are).
+	// 0x20 is a button state report, anything else should be ignored (at least until we figure out what it is).
 	if (opcode != 0x20)
 	{
 		return kIOReturnSuccess;

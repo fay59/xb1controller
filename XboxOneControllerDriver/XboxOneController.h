@@ -41,13 +41,12 @@
 #include <IOKit/usb/IOUSBHIDDriver.h>
 
 // This class does not attach to the USB device: it attaches to its first interface.
-// This is an important distinction, as the interface starts in an unconfigured state.
+// This is an important distinction, as the device starts in an unconfigured state.
 // As the controller exposes no interface in an unconfigured state, we need another
-// driver to configure it so that we can match on the interface. AppleUSBComposite
-// does just that, except that it won't match by default on devices with a vendor-specific
-// class. Fortunately, nothing prevents us from giving it a new matching personality from
-// our own Info.plist to make it match and expose interfaces: no need to write an identical
-// driver ourselves.
+// driver to configure it. AppleUSBComposite does just that, except that it won't match
+// by default on devices with a vendor-specific class. Fortunately, nothing prevents us
+// from giving it a new matching personality from our own Info.plist to make it match:
+// no need to write an identical driver ourselves.
 class com_felixcloutier_driver_XboxOneControllerDriver : public IOUSBHIDDriver
 {
 	OSDeclareDefaultStructors(com_felixcloutier_driver_XboxOneControllerDriver)
