@@ -56,7 +56,7 @@ private:
 	IOUSBInterface* _controllerInterface;
 	IOUSBPipe* _pipeFromController;
 	IOUSBPipe* _pipeToController;
-	IOMemoryDescriptor* _readBuffer;
+	IOBufferMemoryDescriptor* _readBuffer;
 	
 	void releaseEverything();
 	

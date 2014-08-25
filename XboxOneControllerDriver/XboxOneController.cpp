@@ -38,11 +38,10 @@ constexpr UInt8 XboxOneControllerReportDescriptor[] = {
 	0xa1, 0x01,					// COLLECTION (Application)
 		0xa1, 0x00,				// COLLECTION (Physical)
 	
-			// unused bytes
-			0x05, 0x01,			// USAGE_PAGE (Generic Desktop)
+			// 20 00 ss EC (where ss is a sequence number)
 			0x09, 0x3f,			// USAGE (Reserved)
-			0x75, 0x20,			// REPORT_SIZE (32)
-			0x95, 0x04,			// REPORT_COUNT (1)
+			0x75, 0x20,			// REPORT_SIZE (16)
+			0x95, 0x01,			// REPORT_COUNT (1)
 			0x81, 0x02,			// INPUT (Data,Var,Abs)
 
 			// buttons
@@ -56,40 +55,39 @@ constexpr UInt8 XboxOneControllerReportDescriptor[] = {
 			0x81, 0x02,			// INPUT (Data,Var,Abs)
 
 			// triggers
-			0x05, 0x09,			// USAGE_PAGE (Button)
-			0x09, 0x11,			// USAGE (Button 17)
-			0x09, 0x12,			// USAGE (Button 18)
+			// Colin Munro's Xbox 360 controller driver uses Z and Rz instead of buttons.
+			// OS X seems to dislike non-boolean buttons, so that's what I'll be doing too.
+			0x05, 0x01,			// USAGE_PAGE (Generic Desktop)
+			0x09, 0x32,			// USAGE (Z)
+			0x09, 0x35,			// USAGE (Rz)
 			0x15, 0x00,			// LOGICAL_MINIMUM (0)
 			0x26, 0x00, 0x04,	// LOGICAL_MAXIMUM (1024)
 			0x75, 0x10,			// REPORT_SIZE (16)
+			0x95, 0x02,			// REPORT_COUNT (2)
 			0x81, 0x02,			// INPUT (Data,Var,Abs)
 
 			// hat prefixes
-			0x05, 0x01,			// USAGE_PAGE (Generic Desktop)
-			0x09, 0x01,			// USAGE (Pointer)
 			0x16, 0x00, 0x80,	// LOGICAL_MINIMUM (-32768)
 			0x26, 0xff, 0x7f,	// LOGICAL_MAXIMUM (32767)
 			0x36, 0x00, 0x80,	// PHYSICAL MINIMUM (-32768)
 			0x46, 0xff, 0x7f,	// PHYSICAL_MAXIMUM (32767)
+			0x95, 0x02,			// REPORT_COUNT (2)
 			0x75, 0x10,			// REPORT_SIZE (16)
+			0x05, 0x01,			// USAGE_PAGE (Generic Desktop)
 
 			// left hat
+			0x09, 0x01,			// USAGE (Pointer)
 			0xa1, 0x00,			// COLLECTION (Physical)
-				0x05, 0x01,		// USAGE_PAGE (Generic Desktop)
 				0x09, 0x30,		// USAGE (X)
 				0x09, 0x31,		// USAGE (Y)
-				0x95, 0x02,		// REPORT_COUNT (2)
 				0x81, 0x02,		// INPUT (Data,Var,Abs)
 			0xc0,				// END COLLECTION
 
 			// right hat
-			0x05, 0x01,			// USAGE_PAGE (Generic Desktop)
 			0x09, 0x01,			// USAGE (Pointer)
 			0xa1, 0x00,			// COLLECTION (Physical)
-				0x05, 0x01,		// USAGE_PAGE (Generic Desktop)
 				0x09, 0x33,		// USAGE (Rx)
 				0x09, 0x34,		// USAGE (Ry)
-				0x95, 0x02,		// REPORT_COUNT (2)
 				0x81, 0x02,		// INPUT (Data,Var,Abs)
 			0xc0,				// END COLLECTION
 
@@ -460,18 +458,30 @@ void XboxOneController::finishedAsyncRead(void *target, void *parameter, IORetur
 		return;
 	}
 	
-	// Process packet.
-	IOReturn ior = that->handleReport(that->_readBuffer);
-	if (ior != kIOReturnSuccess)
-	{
-		IO_LOG_DEBUG("Couldn't correctly handle controller report: %08x", ior);
-	}
-	
 	// Start a new async read.
-	ior = that->beginAsyncRead();
+	IOReturn ior = that->beginAsyncRead();
 	if (ior != kIOReturnSuccess)
 	{
 		IO_LOG_DEBUG("Couldn't start async read: %08x. Driver will stop functioning.", ior);
 		return;
+	}
+	
+	// Is it an update packet?
+	const UInt8* buffer = static_cast<const UInt8*>(that->_readBuffer->getBytesNoCopy());
+	if (buffer == nullptr || that->_readBuffer->getLength() < 1)
+	{
+		IO_LOG_DEBUG("No buffer?!");
+		return;
+	}
+	
+	// If so, process it.
+	if (buffer[0] == 0x20)
+	{
+		// Process packet.
+		IOReturn ior = that->handleReport(that->_readBuffer);
+		if (ior != kIOReturnSuccess)
+		{
+			IO_LOG_DEBUG("Couldn't correctly handle controller report: %08x", ior);
+		}
 	}
 }
