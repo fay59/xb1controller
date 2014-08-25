@@ -30,9 +30,9 @@
 #include <IOKit/usb/IOUSBDevice.h>
 #include <IOKit/usb/IOUSBInterface.h>
 
-class XboxOneController : public IOHIDDevice
+class com_felixcloutier_driver_XboxOneController : public IOHIDDevice
 {
-	OSDeclareDefaultStructors(XboxOneController)
+	OSDeclareDefaultStructors(com_felixcloutier_driver_XboxOneController)
 	
 public:
 	virtual bool init(OSDictionary* dict = nullptr) override;

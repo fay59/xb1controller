@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.felixcloutier.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.felixcloutier.driver.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -25,14 +25,13 @@
 		<key>XboxOneController</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>com.felixcloutier.${PRODUCT_NAME:rfc1034identifier}</string>
+			<string>com.felixcloutier.driver.${PRODUCT_NAME:rfc1034identifier}</string>
 			<key>IOClass</key>
-			<string>XboxOneControllerDriver</string>
+			<string>com_felixcloutier_driver_XboxOneController</string>
 			<key>IOProviderClass</key>
 			<string>IOUSBDevice</string>
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
-			
 			<key>bDeviceClass</key>
 			<integer>255</integer>
 			<key>bDeviceSubClass</key>

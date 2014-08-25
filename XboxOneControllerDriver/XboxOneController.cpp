@@ -8,7 +8,7 @@
 
 #include "XboxOneController.h"
 
-OSDefineMetaClassAndStructors(XboxOneController, IOHIDDevice)
+OSDefineMetaClassAndStructors(com_felixcloutier_driver_XboxOneController, IOHIDDevice)
 
 #if DEBUG
 // Do not use this macro with numbered arguments.
@@ -20,6 +20,9 @@ OSDefineMetaClassAndStructors(XboxOneController, IOHIDDevice)
 // The convention is to #define 'super' to the superclass's name, Java-style, and then use that
 // through the code.
 #define super IOHIDDevice
+
+// "com_felixcloutier_driver_XboxOneController" is a heck of a long name. This should make it simpler.
+#define XboxOneController com_felixcloutier_driver_XboxOneController
 
 // Magic words to make the controller work.
 constexpr UInt8 XboxOneControllerHelloMessage[] = {0x05, 0x20};
@@ -208,18 +211,6 @@ bool XboxOneController::handleStart(IOService *provider)
 		
 		// -- (2-3) set device configuration. Drivers are expected to do that, so even if we fail there is no
 		// reason to revert back: the next driver on the chain will do that for us.
-		if (_controller->GetNumConfigurations() != 1)
-		{
-			IO_LOG_DEBUG("Controller does not hve exactly one configuration.");
-			break;
-		}
-		
-		const IOUSBConfigurationDescriptor* configuration = _controller->GetFullConfigurationDescriptor(0);
-		if (configuration == nullptr)
-		{
-			IO_LOG_DEBUG("Couldn't get configuration from controller.");
-			break;
-		}
 		
 		// From this point on, we need to open the controller device. We want to keep a reference to it only
 		// if this works.
@@ -232,6 +223,20 @@ bool XboxOneController::handleStart(IOService *provider)
 		// keep the reference around.
 		_controller = device;
 		_controller->retain();
+		
+		// Get configuration #1 and set it as active.
+		if (_controller->GetNumConfigurations() != 1)
+		{
+			IO_LOG_DEBUG("Controller does not hve exactly one configuration.");
+			break;
+		}
+		
+		const IOUSBConfigurationDescriptor* configuration = _controller->GetFullConfigurationDescriptor(0);
+		if (configuration == nullptr)
+		{
+			IO_LOG_DEBUG("Couldn't get configuration from controller.");
+			break;
+		}
 		
 		// Set configuration now that we 'own' the device.
 		IOReturn ior = device->SetConfiguration(this, configuration->bConfigurationValue, true);
@@ -333,7 +338,10 @@ bool XboxOneController::handleStart(IOService *provider)
 			break;
 		}
 		hello->writeBytes(0, XboxOneControllerHelloMessage, sizeof XboxOneControllerHelloMessage);
-		ior = _pipeToController->Write(hello, 100, 100);
+		
+		// The Write method will error out (kIOReturnBadArgument) for intrrupt pipes if you pass it non-zero
+		// timeout parameters.
+		ior = _pipeToController->Write(hello, 0, 0, hello->getLength());
 		hello->release();
 		if (ior != kIOReturnSuccess)
 		{
