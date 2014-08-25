@@ -20,62 +20,44 @@
 // THE SOFTWARE.
 //
 
+// The purpose of the XboxOneControllerDriver class is to attach to the USB interface
+// and provide actual HID driver functionality. Since the class derives from IOUSBHIDDriver,
+// most of it is already implemented for us. We know that the controller behaves differently
+// from a USB HID gamepad in three ways:
 //
-// The Xbox One controller exposes 3 USB interfaces, all of class 0xff, subclass
-// 0x47 and protocol 0xd0. This means that generic USB HID drivers, which expect
-// class 3 devices, will not recognize it. Since we cannot use most of the
-// generic USB driver's functionality, we subclass from IOHIDDevice instead of
-// IOUSBHIDDriver.
+// * it doesn't have a report descriptor;
+// * it needs to be sent a hello message;
+// * it sends reports that aren't state reports.
 //
-// The Xbox One controller does not report its state like a standard Human
-// Interface Device through a Report descriptor. Instead, it sends a "command"
-// that indicates button presses and hat directions. IOKit was not built with
-// only USB in mind, but Apple considered that most HIDs would be HID-compliant,
-// so the simplest way to implement functionality was to ask drivers to expose a
-// HID-compliant interface, no matter what is the actual transport or protocol.
-// This driver is therefore an adapter between the Xbox One controller's
-// proprietary protocol and the standard USB HID interface.
+// We override three methods to fix this: `newReportDescriptor` (to provide a correct report
+// descriptor), `handleStart` (to send the hello message) and `handleReport` (to handle
+// reports that aren't state reports).
 //
+// IOUSBHIDDriver already handles cases like disconnects, which is quite nifty.
 
 #ifndef	XBOX_ONE_CONTROLLER_DRIVER_H
 #define XBOX_ONE_CONTROLLER_DRIVER_H
 
-#include <IOKit/hid/IOHIDDevice.h>
-#include <IOKit/usb/IOUSBDevice.h>
-#include <IOKit/usb/IOUSBInterface.h>
+#include <IOKit/usb/IOUSBHIDDriver.h>
 
-class com_felixcloutier_driver_XboxOneController : public IOHIDDevice
+// This class does not attach to the USB device: it attaches to its first interface.
+// This is an important distinction, as the interface starts in an unconfigured state.
+// As the controller exposes no interface in an unconfigured state, we need another
+// driver to configure it so that we can match on the interface. AppleUSBComposite
+// does just that, except that it won't match by default on devices with a vendor-specific
+// class. Fortunately, nothing prevents us from giving it a new matching personality from
+// our own Info.plist to make it match and expose interfaces: no need to write an identical
+// driver ourselves.
+class com_felixcloutier_driver_XboxOneControllerDriver : public IOUSBHIDDriver
 {
-	OSDeclareDefaultStructors(com_felixcloutier_driver_XboxOneController)
+	OSDeclareDefaultStructors(com_felixcloutier_driver_XboxOneControllerDriver)
 	
 public:
-	virtual bool init(OSDictionary* dict = nullptr) override;
 	virtual IOReturn newReportDescriptor(IOMemoryDescriptor** descriptor) const override;
 	
-	// The values returned by these methods end up in the properties dictionary of the driver.
-	virtual OSString* newManufacturerString() const override;
-	virtual OSString* newProductString() const override;
-	virtual OSString* newTransportString() const override;
-	virtual OSNumber* newPrimaryUsageNumber() const override;
-	virtual OSNumber* newPrimaryUsagePageNumber() const override;
-	virtual OSNumber* newLocationIDNumber() const override;
-	
 protected:
-	virtual void free() override;
 	virtual bool handleStart(IOService* provider) override;
-	virtual void handleStop(IOService* provider) override;
-	
-private:
-	IOUSBDevice* _controller;
-	IOUSBInterface* _controllerInterface;
-	IOUSBPipe* _pipeFromController;
-	IOUSBPipe* _pipeToController;
-	IOBufferMemoryDescriptor* _readBuffer;
-	
-	void releaseEverything();
-	
-	IOReturn beginAsyncRead();
-	static void finishedAsyncRead(void* target, void* parameter, IOReturn status, UInt32 bufferRemaining);
+	virtual IOReturn handleReport(IOMemoryDescriptor* descriptor, IOHIDReportType type, IOOptionBits options) override;
 };
 
 #endif

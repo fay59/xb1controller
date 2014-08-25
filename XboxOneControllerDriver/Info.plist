@@ -27,19 +27,34 @@
 			<key>CFBundleIdentifier</key>
 			<string>com.felixcloutier.driver.${PRODUCT_NAME:rfc1034identifier}</string>
 			<key>IOClass</key>
-			<string>com_felixcloutier_driver_XboxOneController</string>
+			<string>com_felixcloutier_driver_XboxOneControllerDriver</string>
 			<key>IOProviderClass</key>
-			<string>IOUSBDevice</string>
+			<string>IOUSBInterface</string>
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
-			<key>bDeviceClass</key>
-			<integer>255</integer>
+			<key>idVendor</key>
+			<integer>1118</integer>
+			<key>idProduct</key>
+			<integer>721</integer>
+			<key>bConfigurationValue</key>
+			<integer>1</integer>
+			<key>bInterfaceNumber</key>
+			<integer>0</integer>
+		</dict>
+		<key>XboxOneControllerDevice</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.driver.AppleUSBComposite</string>
+			<key>IOClass</key>
+			<string>AppleUSBComposite</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBDevice</string>
+			<key>idVendor</key>
+			<integer>1118</integer>
 			<key>bDeviceSubClass</key>
 			<integer>71</integer>
 			<key>bDeviceProtocol</key>
 			<integer>208</integer>
-			<key>idVendor</key>
-			<integer>1118</integer>
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
@@ -50,6 +65,8 @@
 		<string>2.0</string>
 		<key>com.apple.iokit.IOUSBFamily</key>
 		<string>683.4</string>
+		<key>com.apple.iokit.IOUSBHIDDriver</key>
+		<string>660.4</string>
 		<key>com.apple.kpi.iokit</key>
 		<string>13.3</string>
 		<key>com.apple.kpi.libkern</key>

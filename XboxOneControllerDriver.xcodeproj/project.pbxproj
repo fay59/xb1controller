@@ -15,7 +15,6 @@
 		DCCAFD7419A5214A0032E2D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCCAFD7E19A52CAE0032E2D3 /* XboxOneController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XboxOneController.h; sourceTree = "<group>"; };
 		DCCAFD7F19A52CE80032E2D3 /* XboxOneController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XboxOneController.cpp; sourceTree = "<group>"; };
-		DCCAFDAD19A7F1F70032E2D3 /* XboxOneControllerPacket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XboxOneControllerPacket.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,7 +47,6 @@
 		DCCAFD7219A5214A0032E2D3 /* XboxOneControllerDriver */ = {
 			isa = PBXGroup;
 			children = (
-				DCCAFDAD19A7F1F70032E2D3 /* XboxOneControllerPacket.h */,
 				DCCAFD7E19A52CAE0032E2D3 /* XboxOneController.h */,
 				DCCAFD7F19A52CE80032E2D3 /* XboxOneController.cpp */,
 				DCCAFD7319A5214A0032E2D3 /* Supporting Files */,
@@ -267,6 +265,7 @@
 				DCCAFD7D19A5214A0032E2D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
