@@ -35,7 +35,7 @@ OSDefineMetaClassAndStructors(com_felixcloutier_driver_XboxOneControllerDriver, 
 // through the code.
 #define super IOUSBHIDDriver
 
-// "com_felixcloutier_driver_XboxOneController" is a heck of a long name. This should make it prettier.
+// "com_felixcloutier_driver_XboxOneControllerDriver" is a heck of a long name. This should make it prettier.
 #define XboxOneControllerDriver com_felixcloutier_driver_XboxOneControllerDriver
 
 // Magic words to make the controller work.
@@ -46,6 +46,8 @@ constexpr UInt8 XboxOneControllerHelloMessage[] = {0x05, 0x20};
 // See http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf for usage page and usage.
 // See http://www.usb.org/developers/hidpage#HID%20Descriptor%20Tool for Windows tool to create/parse HID report
 // descriptors.
+// http://sourceforge.net/projects/hidrdd/ was used to validate the descriptor by making sure that the emitted struct
+// looks like what you would expect.
 constexpr UInt8 XboxOneControllerReportDescriptor[] = {
 	0x05, 0x01,					// USAGE_PAGE (Generic Desktop)
 	0x09, 0x05,					// USAGE (Game pad)
@@ -109,6 +111,31 @@ constexpr UInt8 XboxOneControllerReportDescriptor[] = {
 	0xc0,						// END COLLECTION
 };
 
+bool XboxOneControllerDriver::init(OSDictionary* dict)
+{
+	// Just make sure that the driver is in a predictable state.
+	if (!super::init(dict))
+	{
+		return false;
+	}
+	
+	_interruptPipe = nullptr;
+	return true;
+}
+
+bool XboxOneControllerDriver::didTerminate(IOService *provider, IOOptionBits options, bool *defer)
+{
+	// IOUSBHIDDriver releases its _interruptPipe reference from `didTerminate`, so it's probably the right.
+	
+	if (_interruptPipe != nullptr)
+	{
+		_interruptPipe->release();
+		_interruptPipe = nullptr;
+	}
+	
+	return super::didTerminate(provider, options, defer);
+}
+
 IOReturn XboxOneControllerDriver::newReportDescriptor(IOMemoryDescriptor **descriptor) const
 {
 	if (descriptor == nullptr)
@@ -132,6 +159,30 @@ IOReturn XboxOneControllerDriver::newReportDescriptor(IOMemoryDescriptor **descr
 	return kIOReturnSuccess;
 }
 
+IOReturn XboxOneControllerDriver::setPowerState(unsigned long powerStateOrdinal, IOService *device)
+{
+	IOReturn ior = super::setPowerState(powerStateOrdinal, device);
+	if (ior != kIOPMAckImplied)
+	{
+		IO_LOG_DEBUG("super::setPowerState failed");
+		return ior;
+	}
+	
+	// When we come back from sleep, the controller is off and needs to be acknowledged again.
+	// This is the only case that we specifically want to handle.
+	if (powerStateOrdinal == kUSBHIDPowerStateOn)
+	{
+		IOReturn ior = sendHello();
+		if (ior != kIOReturnSuccess)
+		{
+			IO_LOG_DEBUG("Couldn't correctly wake from sleep because sendHello failed: %08x", ior);
+			return ior;
+		}
+	}
+	
+	return kIOPMAckImplied;
+}
+
 bool XboxOneControllerDriver::handleStart(IOService *provider)
 {
 	// Apple says to call super::handleStart at the *beginning* of the method.
@@ -148,16 +199,6 @@ bool XboxOneControllerDriver::handleStart(IOService *provider)
 		return false;
 	}
 	
-	// Create the hello message that we're about to send to the controller.
-	IOMemoryDescriptor* hello = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task, 0, 2);
-	if (hello == nullptr)
-	{
-		IO_LOG_DEBUG("Could not allocate buffer for hello message.");
-		return false;
-	}
-	hello->writeBytes(0, XboxOneControllerHelloMessage, sizeof XboxOneControllerHelloMessage);
-	
-	IOReturn ior = kIOReturnError;
 	// Find the pipe to which we have to send the hello message.
 	IOUSBFindEndpointRequest pipeRequest = {
 		.type = kUSBInterrupt,
@@ -165,19 +206,25 @@ bool XboxOneControllerDriver::handleStart(IOService *provider)
 	};
 	
 	IOUSBPipe* pipeToController = interface->FindNextPipe(nullptr, &pipeRequest);
-	if (pipeToController != nullptr)
+	if (pipeToController == nullptr)
 	{
-		// Everything's in order now. Tell the controller that it can start working.
-		ior = pipeToController->Write(hello, 0, 0, hello->getLength());
-		if (ior != kIOReturnSuccess)
-		{
-			IO_LOG_DEBUG("Couldn't send hello message to controller: %08x\n", ior);
-		}
+		IO_LOG_DEBUG("No interrupt pipe found on controller");
+		return false;
 	}
 	
-	// Well, that's all for initialization. Thanks folks!
-	hello->release();
-	return ior == kIOReturnSuccess;
+	// `sendHello` needs _interruptPipe to be set, but only retain it if it succeeds.
+	_interruptPipe = pipeToController;
+	
+	IOReturn ior = sendHello();
+	if (ior != kIOReturnSuccess)
+	{
+		IO_LOG_DEBUG("Couldn't send hello message: %08x", ior);
+		_interruptPipe = nullptr;
+		return false;
+	}
+	
+	_interruptPipe->retain();
+	return true;
 }
 
 IOReturn XboxOneControllerDriver::handleReport(IOMemoryDescriptor *descriptor, IOHIDReportType type, IOOptionBits options)
@@ -198,4 +245,38 @@ IOReturn XboxOneControllerDriver::handleReport(IOMemoryDescriptor *descriptor, I
 	}
 	
 	return super::handleReport(descriptor, type, options);
+}
+
+IOReturn XboxOneControllerDriver::sendHello()
+{
+	if (_interruptPipe == nullptr) // paranoid check
+	{
+		IO_LOG_DEBUG("_interruptPipe is null");
+		return kIOReturnInternalError;
+	}
+	
+	// Create the hello message that we're about to send to the controller.
+	constexpr size_t helloSize = sizeof XboxOneControllerHelloMessage;
+	IOMemoryDescriptor* hello = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task, 0, helloSize);
+	if (hello == nullptr)
+	{
+		IO_LOG_DEBUG("Could not allocate buffer for hello message.");
+		return false;
+	}
+	
+	IOByteCount bytesWritten = hello->writeBytes(0, XboxOneControllerHelloMessage, helloSize);
+	if (bytesWritten != helloSize) // paranoid check
+	{
+		return kIOReturnOverrun;
+	}
+	
+	// Now send the message
+	IOReturn ior = _interruptPipe->Write(hello, 0, 0, hello->getLength());
+	if (ior != kIOReturnSuccess)
+	{
+		IO_LOG_DEBUG("Couldn't send hello message to controller: %08x\n", ior);
+	}
+	
+	hello->release();
+	return ior;
 }

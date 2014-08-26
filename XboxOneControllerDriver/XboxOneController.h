@@ -33,6 +33,8 @@
 // descriptor), `handleStart` (to send the hello message) and `handleReport` (to handle
 // reports that aren't state reports).
 //
+// Additionally, we override `setPowerState` to wake up the controller after sleep.
+//
 // IOUSBHIDDriver already handles cases like disconnects, which is quite nifty.
 
 #ifndef	XBOX_ONE_CONTROLLER_DRIVER_H
@@ -52,11 +54,20 @@ class com_felixcloutier_driver_XboxOneControllerDriver : public IOUSBHIDDriver
 	OSDeclareDefaultStructors(com_felixcloutier_driver_XboxOneControllerDriver)
 	
 public:
+	virtual bool init(OSDictionary* dictionary = nullptr) override;
+	virtual bool didTerminate(IOService* provider, IOOptionBits options, bool* defer) override;
+	
 	virtual IOReturn newReportDescriptor(IOMemoryDescriptor** descriptor) const override;
+	virtual IOReturn setPowerState(unsigned long powerStateOrdinal, IOService* device) override;
 	
 protected:
 	virtual bool handleStart(IOService* provider) override;
 	virtual IOReturn handleReport(IOMemoryDescriptor* descriptor, IOHIDReportType type, IOOptionBits options) override;
+	
+private:
+	IOReturn sendHello();
+	
+	IOUSBPipe* _interruptPipe;
 };
 
 #endif
