@@ -29,9 +29,15 @@ escaping your controller or expensive computer.
 Status
 ------
 
+In my book, this driver is ready for production. This means that it is useful
+for actual gaming and that people are unlikely to have problems with it.
+
 The driver only works when the controller is connected with a USB cable to the
-Mac. I haven't figured out wireless. If it doesn't use Bluetooth, it might not
-even be possible.
+Mac. I believe that the controller does not use Bluetooth, which makes it
+unlikely to ever work unless Microsoft releases some USB dongle.
+
+Technicalities
+--------------
 
 The driver exposes the controller as a HID gamepad whose name is "Controller"
 (that's Microsoft's controller guys' fault, not mine, though it wouldn't be very
@@ -62,12 +68,23 @@ You'll notice that the triggers are considered axes. This is because the Xbox
 One controller has analog triggers with values varying between 0 and 1023.
 These are not buttons (in the sense that buttons can only be either on or off).
 
-The driver does not expose rumble motors, but that would be neat. If anyone has
-any info on the magic words to send, that would be awesome.
+The driver does not expose rumble motors. From badgio's [XboxOneController][4]
+project, it appears that the magic byte sequence to send to the controller is:
 
-The driver does not expose force feedback on the triggers either, but I don't
-think that any non-Xbox game uses that.
+    09 00 00 09 00 0f .w .x .y .z ff 00 00
+
+where `.w` and `.x` are values for the left and right triggers, and `.y` and
+`.z` are values for the left and right handles, respectively. So on the
+controller's side, force feedback is fairly simple. The problem is that from the
+only [example implementation of force feedback][5] I could find, it appears that
+the work required on the software side is [non-trivial][6]. Not to mention that
+I know of [just one application][7] that takes advantage of it.
+
 
   [1]: https://github.com/kylelemons/xbox/
   [2]: http://en.wikipedia.org/wiki/Magic_smoke
   [3]: https://github.com/bkase/xbox-one-fake-driver
+  [4]: https://github.com/badgio/XboxOneController
+  [5]: http://tattiebogle.net/index.php/ProjectRoot/Xbox360Controller/OsxDriver
+  [6]: https://developer.apple.com/library/mac/documentation/ForceFeedback/Reference/IOForceFeedbackLib_header_reference/Reference/reference.html#//apple_ref/doc/uid/TP40011602
+  [7]: http://sixtyforce.com/help/controllers.html

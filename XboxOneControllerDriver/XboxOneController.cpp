@@ -125,7 +125,8 @@ bool XboxOneControllerDriver::init(OSDictionary* dict)
 
 bool XboxOneControllerDriver::didTerminate(IOService *provider, IOOptionBits options, bool *defer)
 {
-	// IOUSBHIDDriver releases its _interruptPipe reference from `didTerminate`, so it's probably the right.
+	// IOUSBHIDDriver releases its _interruptPipe reference from `didTerminate`, so it's probably the right
+	// place to do this.
 	
 	if (_interruptPipe != nullptr)
 	{
@@ -143,13 +144,14 @@ IOReturn XboxOneControllerDriver::newReportDescriptor(IOMemoryDescriptor **descr
 		return kIOReturnBadArgument;
 	}
 	
-	IOMemoryDescriptor* buffer = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task, 0, sizeof XboxOneControllerReportDescriptor);
+	constexpr size_t descriptorSize = sizeof XboxOneControllerReportDescriptor;
+	IOMemoryDescriptor* buffer = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task, 0, descriptorSize);
 	if (buffer == nullptr)
 	{
 		return kIOReturnNoMemory;
 	}
 	
-	IOByteCount written = buffer->writeBytes(0, XboxOneControllerReportDescriptor, sizeof XboxOneControllerReportDescriptor);
+	IOByteCount written = buffer->writeBytes(0, XboxOneControllerReportDescriptor, descriptorSize);
 	if (written != sizeof XboxOneControllerReportDescriptor) // paranoid check
 	{
 		return kIOReturnNoSpace;
@@ -161,6 +163,8 @@ IOReturn XboxOneControllerDriver::newReportDescriptor(IOMemoryDescriptor **descr
 
 IOReturn XboxOneControllerDriver::setPowerState(unsigned long powerStateOrdinal, IOService *device)
 {
+	// For some reason, Apple is returning kIOPM constants as IOReturn codes even though
+	// they do not follow the IOReturn convention. Don't check them with SUCCEEDED or FAILED!
 	IOReturn ior = super::setPowerState(powerStateOrdinal, device);
 	if (ior != kIOPMAckImplied)
 	{
@@ -175,8 +179,11 @@ IOReturn XboxOneControllerDriver::setPowerState(unsigned long powerStateOrdinal,
 		IOReturn ior = sendHello();
 		if (ior != kIOReturnSuccess)
 		{
-			IO_LOG_DEBUG("Couldn't correctly wake from sleep because sendHello failed: %08x", ior);
-			return ior;
+			IO_LOG_DEBUG("Couldn't wake up because sendHello failed: %08x", ior);
+			
+			// Since we have to return one of the kIOPM constants, we can't return this IOResult
+			// directly. Since there is no generic error return code, we would have to return
+			// success even though we weren't successful.
 		}
 	}
 	
@@ -185,7 +192,7 @@ IOReturn XboxOneControllerDriver::setPowerState(unsigned long powerStateOrdinal,
 
 bool XboxOneControllerDriver::handleStart(IOService *provider)
 {
-	// Apple says to call super::handleStart at the *beginning* of the method.
+	// Apple says you should call super::handleStart at the *beginning* of the method.
 	if (!super::handleStart(provider))
 	{
 		return false;
@@ -199,21 +206,22 @@ bool XboxOneControllerDriver::handleStart(IOService *provider)
 		return false;
 	}
 	
-	// Find the pipe to which we have to send the hello message.
+	// Find the pipe through which we have to send the hello message.
+	// This is redundant with work that IOUSBHIDDriver already did, but there are no accessors.
 	IOUSBFindEndpointRequest pipeRequest = {
 		.type = kUSBInterrupt,
 		.direction = kUSBOut,
 	};
 	
-	IOUSBPipe* pipeToController = interface->FindNextPipe(nullptr, &pipeRequest);
-	if (pipeToController == nullptr)
+	IOUSBPipe* interruptPipe = interface->FindNextPipe(nullptr, &pipeRequest);
+	if (interruptPipe == nullptr)
 	{
 		IO_LOG_DEBUG("No interrupt pipe found on controller");
 		return false;
 	}
 	
 	// `sendHello` needs _interruptPipe to be set, but only retain it if it succeeds.
-	_interruptPipe = pipeToController;
+	_interruptPipe = interruptPipe;
 	
 	IOReturn ior = sendHello();
 	if (ior != kIOReturnSuccess)
