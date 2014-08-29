@@ -7,10 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC9F1D5C19B0F4710028F3CD /* Welcome.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DC9F1D5919B0F4710028F3CD /* Welcome.rtf */; };
+		DC9F1D5D19B0F4710028F3CD /* Licence.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DC9F1D5A19B0F4710028F3CD /* Licence.rtf */; };
+		DC9F1D5E19B0F4710028F3CD /* ReadMe.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DC9F1D5B19B0F4710028F3CD /* ReadMe.rtf */; };
 		DCCAFD8019A52CE80032E2D3 /* XboxOneController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DCCAFD7F19A52CE80032E2D3 /* XboxOneController.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DC9F1D5919B0F4710028F3CD /* Welcome.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Welcome.rtf; sourceTree = "<group>"; };
+		DC9F1D5A19B0F4710028F3CD /* Licence.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Licence.rtf; sourceTree = "<group>"; };
+		DC9F1D5B19B0F4710028F3CD /* ReadMe.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = "<group>"; };
 		DCCAFD7019A5214A0032E2D3 /* XboxOneControllerDriver.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XboxOneControllerDriver.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCCAFD7419A5214A0032E2D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCCAFD7E19A52CAE0032E2D3 /* XboxOneController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XboxOneController.h; sourceTree = "<group>"; };
@@ -28,6 +34,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DC9F1D5819B0F4490028F3CD /* Packaging */ = {
+			isa = PBXGroup;
+			children = (
+				DC9F1D5919B0F4710028F3CD /* Welcome.rtf */,
+				DC9F1D5A19B0F4710028F3CD /* Licence.rtf */,
+				DC9F1D5B19B0F4710028F3CD /* ReadMe.rtf */,
+			);
+			path = Packaging;
+			sourceTree = "<group>";
+		};
 		DCCAFD6619A5214A0032E2D3 = {
 			isa = PBXGroup;
 			children = (
@@ -49,6 +65,7 @@
 			children = (
 				DCCAFD7E19A52CAE0032E2D3 /* XboxOneController.h */,
 				DCCAFD7F19A52CE80032E2D3 /* XboxOneController.cpp */,
+				DC9F1D5819B0F4490028F3CD /* Packaging */,
 				DCCAFD7319A5214A0032E2D3 /* Supporting Files */,
 			);
 			path = XboxOneControllerDriver;
@@ -104,6 +121,7 @@
 				TargetAttributes = {
 					DCCAFD6F19A5214A0032E2D3 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = F7J4J826HN;
 					};
 				};
 			};
@@ -129,6 +147,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC9F1D5D19B0F4710028F3CD /* Licence.rtf in Resources */,
+				DC9F1D5E19B0F4710028F3CD /* ReadMe.rtf in Resources */,
+				DC9F1D5C19B0F4710028F3CD /* Welcome.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +247,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.0.0d1;
 				INFOPLIST_FILE = XboxOneControllerDriver/Info.plist;
+				INSTALL_GROUP = wheel;
+				INSTALL_OWNER = root;
 				MODULE_NAME = com.felixcloutier.XboxOneControllerDriver;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -239,6 +262,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.0.0d1;
 				INFOPLIST_FILE = XboxOneControllerDriver/Info.plist;
+				INSTALL_GROUP = wheel;
+				INSTALL_OWNER = root;
 				MODULE_NAME = com.felixcloutier.XboxOneControllerDriver;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
