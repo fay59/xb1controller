@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DC9F1D5C19B0F4710028F3CD /* Welcome.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DC9F1D5919B0F4710028F3CD /* Welcome.rtf */; };
-		DC9F1D5D19B0F4710028F3CD /* Licence.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DC9F1D5A19B0F4710028F3CD /* Licence.rtf */; };
-		DC9F1D5E19B0F4710028F3CD /* ReadMe.rtf in Resources */ = {isa = PBXBuildFile; fileRef = DC9F1D5B19B0F4710028F3CD /* ReadMe.rtf */; };
 		DCCAFD8019A52CE80032E2D3 /* XboxOneController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DCCAFD7F19A52CE80032E2D3 /* XboxOneController.cpp */; };
 /* End PBXBuildFile section */
 
@@ -147,9 +144,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC9F1D5D19B0F4710028F3CD /* Licence.rtf in Resources */,
-				DC9F1D5E19B0F4710028F3CD /* ReadMe.rtf in Resources */,
-				DC9F1D5C19B0F4710028F3CD /* Welcome.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,8 +241,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.0.0d1;
 				INFOPLIST_FILE = XboxOneControllerDriver/Info.plist;
-				INSTALL_GROUP = wheel;
-				INSTALL_OWNER = root;
 				MODULE_NAME = com.felixcloutier.XboxOneControllerDriver;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -262,8 +254,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.0.0d1;
 				INFOPLIST_FILE = XboxOneControllerDriver/Info.plist;
-				INSTALL_GROUP = wheel;
-				INSTALL_OWNER = root;
 				MODULE_NAME = com.felixcloutier.XboxOneControllerDriver;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_NAME = "$(TARGET_NAME)";

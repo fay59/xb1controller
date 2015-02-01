@@ -9,12 +9,12 @@
 \b kernel extension
 \b0 . This means that it runs side-by-side with the operating system. It's not bound by the same rules 
 \i mere programs
-\i0  operate under: a kernel extension can do whatever it pleases and there's nobody to stop it. A kernel extension that crashes at boot is a hassle to remove. If you aren't comfortable with that, you should consider {\field{\*\fldinst{HYPERLINK "https://github.com/bkase/xbox-one-fake-driver"}}{\fldrslt \cf2 bkase}}'s or {\field{\*\fldinst{HYPERLINK "https://github.com/kylelemons/xbox/"}}{\fldrslt \cf2 kylelemons}}'s usermode drivers that translate controller input into key presses: the downside is that you lose the nuances of the joysticks and triggers, since a keyboard key is either pressed or not pressed.\
+\i0  operate under: a kernel extension can do whatever it pleases and there's nobody to stop it. Also, if it crashes, it takes down the whole operating system with it. If you aren't comfortable with that, you should consider {\field{\*\fldinst{HYPERLINK "https://github.com/bkase/xbox-one-fake-driver"}}{\fldrslt \cf2 bkase}}'s or {\field{\*\fldinst{HYPERLINK "https://github.com/kylelemons/xbox/"}}{\fldrslt \cf2 kylelemons}}'s "usermode drivers" that translate controller input into key presses: the downside is that you lose the nuances of the joysticks and triggers, since there is no possible nuance in a keyboard key press.\
 Finally, Apple makes great backup software called "Time Machine". Use it!\
 That said, I have been playing with my controller for several days now, I have unplugged it at awkward moments to see how it behaves, and I haven\'92t experienced a single crash. If I\'92m releasing the software, it\'92s because I think it\'92s ready for prime time.\
 
 \b To uninstall
-\b0 : browse to /Library/Extensions and remove XboxOneControllerDriver.kext. You will need to reboot.\
+\b0 : browse to /Library/Extensions, remove XboxOneControllerDriver.kext and reboot.\
 
-\b In case of massive problems
+\b In case of problems
 \b0 : you can disable the driver by {\field{\*\fldinst{HYPERLINK "http://support.apple.com/kb/HT1564"}}{\fldrslt \cf2 booting in safe mode}}. TL;DR: hold Shift as you boot to disable loading third-party kernel extensions (like this one) if you are otherwise unable to boot.}

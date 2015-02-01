@@ -154,6 +154,7 @@ IOReturn XboxOneControllerDriver::newReportDescriptor(IOMemoryDescriptor **descr
 	IOByteCount written = buffer->writeBytes(0, XboxOneControllerReportDescriptor, descriptorSize);
 	if (written != sizeof XboxOneControllerReportDescriptor) // paranoid check
 	{
+		buffer->release();
 		return kIOReturnNoSpace;
 	}
 	
@@ -192,47 +193,52 @@ IOReturn XboxOneControllerDriver::setPowerState(unsigned long powerStateOrdinal,
 
 bool XboxOneControllerDriver::handleStart(IOService *provider)
 {
-	// Apple says you should call super::handleStart at the *beginning* of the method.
-	if (!super::handleStart(provider))
-	{
-		return false;
-	}
+	IOUSBInterface* interface = nullptr;
+	IOUSBPipe* interruptPipe = nullptr;
+	IOReturn ior = kIOReturnSuccess;
 	
-	// Is it the correct kind of object?
-	IOUSBInterface* interface = OSDynamicCast(IOUSBInterface, provider);
-	if (interface == nullptr)
-	{
-		IO_LOG_DEBUG("IOUSBHIDDriver is handling start on an object that's not a IOUSBInterface??");
-		return false;
-	}
-	
-	// Find the pipe through which we have to send the hello message.
-	// This is redundant with work that IOUSBHIDDriver already did, but there are no accessors.
 	IOUSBFindEndpointRequest pipeRequest = {
 		.type = kUSBInterrupt,
 		.direction = kUSBOut,
 	};
 	
-	IOUSBPipe* interruptPipe = interface->FindNextPipe(nullptr, &pipeRequest);
+	// Apple says you should call super::handleStart at the *beginning* of the method.
+	if (!super::handleStart(provider))
+	{
+		goto cleanup;
+	}
+	
+	// Paranoid check: is it the correct kind of object?
+	interface = OSDynamicCast(IOUSBInterface, provider);
+	if (interface == nullptr)
+	{
+		IO_LOG_DEBUG("IOUSBHIDDriver is handling start on an object that's not a IOUSBInterface??");
+		goto cleanup;
+	}
+	
+	// Find the pipe through which we have to send the hello message.
+	// This is redundant with work that IOUSBHIDDriver already did, but there are no accessors.
+	interruptPipe = interface->FindNextPipe(nullptr, &pipeRequest);
 	if (interruptPipe == nullptr)
 	{
 		IO_LOG_DEBUG("No interrupt pipe found on controller");
-		return false;
+		goto cleanup;
 	}
 	
 	// `sendHello` needs _interruptPipe to be set, but only retain it if it succeeds.
 	_interruptPipe = interruptPipe;
-	
-	IOReturn ior = sendHello();
+	ior = sendHello();
 	if (ior != kIOReturnSuccess)
 	{
 		IO_LOG_DEBUG("Couldn't send hello message: %08x", ior);
 		_interruptPipe = nullptr;
-		return false;
+		goto cleanup;
 	}
 	
 	_interruptPipe->retain();
-	return true;
+	
+cleanup:
+	return _interruptPipe != nullptr;
 }
 
 IOReturn XboxOneControllerDriver::handleReport(IOMemoryDescriptor *descriptor, IOHIDReportType type, IOOptionBits options)
@@ -257,34 +263,47 @@ IOReturn XboxOneControllerDriver::handleReport(IOMemoryDescriptor *descriptor, I
 
 IOReturn XboxOneControllerDriver::sendHello()
 {
+	IOReturn ior = kIOReturnSuccess;
+	IOMemoryDescriptor* hello = nullptr;
+	IOByteCount bytesWritten = 0;
+	constexpr size_t helloSize = sizeof XboxOneControllerHelloMessage;
+	
 	if (_interruptPipe == nullptr) // paranoid check
 	{
 		IO_LOG_DEBUG("_interruptPipe is null");
-		return kIOReturnInternalError;
+		ior = kIOReturnInternalError;
+		goto cleanup;
 	}
 	
 	// Create the hello message that we're about to send to the controller.
-	constexpr size_t helloSize = sizeof XboxOneControllerHelloMessage;
-	IOMemoryDescriptor* hello = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task, 0, helloSize);
+	hello = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task, 0, helloSize);
 	if (hello == nullptr)
 	{
 		IO_LOG_DEBUG("Could not allocate buffer for hello message.");
-		return false;
+		ior = kIOReturnNoMemory;
+		goto cleanup;
 	}
 	
-	IOByteCount bytesWritten = hello->writeBytes(0, XboxOneControllerHelloMessage, helloSize);
+	bytesWritten = hello->writeBytes(0, XboxOneControllerHelloMessage, helloSize);
 	if (bytesWritten != helloSize) // paranoid check
 	{
-		return kIOReturnOverrun;
+		ior = kIOReturnOverrun;
+		goto cleanup;
 	}
 	
 	// Now send the message
-	IOReturn ior = _interruptPipe->Write(hello, 0, 0, hello->getLength());
+	ior = _interruptPipe->Write(hello, 0, 0, hello->getLength());
 	if (ior != kIOReturnSuccess)
 	{
 		IO_LOG_DEBUG("Couldn't send hello message to controller: %08x\n", ior);
+		goto cleanup;
 	}
 	
-	hello->release();
+cleanup:
+	if (hello != nullptr)
+	{
+		hello->release();
+	}
+	
 	return ior;
 }
